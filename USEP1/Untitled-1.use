@@ -1,0 +1,88 @@
+model Practica1
+
+class Empresa 
+attributes
+nombre: String
+valorMinimoPedido: Real
+cif: String
+end
+
+class Persona
+attributes
+nombre: String
+edad: Integer
+genero: String
+dni: String
+end
+
+class Producto
+attributes
+nombre: String
+end
+
+class Pedido
+attributes
+fecha: String
+precioTotal: Real
+end
+
+association PedidoEmpresa between
+Pedido [*] role pedido
+Empresa [1] role empresa
+end
+
+association PersonaPedido between
+Persona [1] role persona_que_pide
+Pedido [*] role pedido_que_realiza
+end
+
+associationclass Cliente between
+Empresa [*] role empresaVendedora 
+Persona [*] role cliente 
+attributes
+dineroGastado: Real
+vip: Boolean
+end
+
+associationclass Gerente between
+Empresa [*] role empresa_Gestionada 
+Persona [*] role gerente
+attributes
+salario: Real
+end
+
+associationclass Director between
+Empresa [*] role empresa_Dirigida 
+Persona [*] role director
+attributes
+salario: Real
+end
+
+associationclass Trabajador_Base between
+Empresa [*] role empresa_en_que_trabaja
+Persona [*] role trabajador_Base
+attributes
+salario: Real
+end
+
+associationclass Almacenado between
+Empresa [*] role empresa_poseedora
+Producto [*] role producto_que_posee_la_empresa
+attributes
+precio: Real
+cantidad: Integer
+end
+
+associationclass Compra between
+Producto [1..10] role producto_en_pedido
+Pedido [*] role pedido
+attributes
+cantidad: Integer
+end
+
+associationclass Posesion between
+Producto [1..10] role producto_que_posee_la_persona
+Persona [*] role persona_poseedora
+attributes
+cantidad:Integer
+end
