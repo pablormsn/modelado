@@ -86,3 +86,12 @@ Persona [*] role persona_poseedora
 attributes
 cantidad: Real
 end
+
+constraints
+context Empresa inv NoVariosCargosEnLaMismaEmpresa:
+  self.trabajador_Base->forAll(tb | not self.gerente->includes(tb) and not self.director->includes(tb))
+  and self.gerente->intersection(self.director)->isEmpty()
+
+context Empresa inv SalarioCorrecto:
+  self.director.salario > self.gerente.salario and
+  self.gerente.salario > self.trabajador_Base->forAll(tb | tb.salario)
