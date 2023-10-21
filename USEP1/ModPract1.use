@@ -45,22 +45,22 @@ vip: Boolean
 end
 
 associationclass Gerente between
-Empresa [*] role empresa_Gestionada 
-Persona [*] role gerente
+Empresa [0..3] role empresa_Gestionada 
+Persona [1] role gerente
 attributes
 salario: Real
 end
 
 associationclass Director between
-Empresa [*] role empresa_Dirigida 
-Persona [*] role director
+Empresa [0..3] role empresa_Dirigida 
+Persona [1] role director
 attributes
 salario: Real
 end
 
 associationclass Trabajador_Base between
-Empresa [*] role empresa_en_que_trabaja
-Persona [*] role trabajador_Base
+Empresa [0..3] role empresa_en_que_trabaja
+Persona [1..*] role trabajador_Base
 attributes
 salario: Real
 end
@@ -70,19 +70,19 @@ Empresa [*] role empresa_poseedora
 Producto [*] role producto_que_posee_la_empresa
 attributes
 precio: Real
-cantidad: Integer
+cantidad: Real
 end
 
 associationclass Compra between
 Producto [1..10] role producto_en_pedido
 Pedido [*] role pedido
 attributes
-cantidad: Integer
+cantidad: Real
 end
 
 associationclass Posesion between
-Producto [1..10] role producto_que_posee_la_persona
+Producto [0..10] role producto_que_posee_la_persona
 Persona [*] role persona_poseedora
 attributes
-cantidad:Integer
+cantidad: Real
 end
