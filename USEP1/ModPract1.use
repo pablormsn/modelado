@@ -70,21 +70,21 @@ Empresa [*] role empresa_poseedora
 Producto [*] role producto_que_posee_la_empresa
 attributes
 precio: Real
-cantidad: Real
+cantidad: Integer
 end
 
 associationclass Compra between
 Producto [1..10] role producto_en_pedido
 Pedido [*] role pedido
 attributes
-cantidad: Real
+cantidad: Integer
 end
 
 associationclass Posesion between
 Producto [0..10] role producto_que_posee_la_persona
 Persona [*] role persona_poseedora
 attributes
-cantidad: Real
+cantidad: Integer
 end
 
 constraints
