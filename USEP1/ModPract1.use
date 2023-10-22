@@ -127,3 +127,11 @@ inv ArticulosEnAlmacen:
 context Persona
 inv LimiteTiposArticulosPorPersona:
   self.producto_que_posee_la_persona->collect(p | p)->asSet()->size() <= 10
+
+context Cliente
+inv ClienteVipCondicional:
+  self.empresaVendedora.gerente->includes(self.cliente) or
+  self.empresaVendedora.director->includes(self.cliente) or
+  self.empresaVendedora.trabajador_Base->includes(self.cliente) or
+    self.dineroGastado > 1000 implies self.vip
+  
