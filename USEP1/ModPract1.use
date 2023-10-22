@@ -88,10 +88,21 @@ cantidad: Integer
 end
 
 constraints
-context Empresa inv NoVariosCargosEnLaMismaEmpresa:
-  self.trabajador_Base->forAll(tb | not self.gerente->includes(tb) and not self.director->includes(tb))
-  and self.gerente->intersection(self.director)->isEmpty()
+context Empresa 
+inv NoVariosCargosEnLaMismaEmpresa: self.trabajador_Base->forAll(tb | not self.gerente->includes(tb) and not self.director->includes(tb))
 
-context Empresa inv SalarioCorrecto:
+context Empresa
+inv DistintoGerenteYDirector: 
+    self.gerente->notEmpty() and self.director->notEmpty() implies self.gerente <> self.director
+
+context Empresa
+inv SalarioCorrecto:
   self.director.salario > self.gerente.salario and
-  self.gerente.salario > self.trabajador_Base->forAll(tb | tb.salario)
+  self.trabajador_Base->forAll(tb | tb.salario < self.gerente.salario)
+
+context Persona
+inv LimiteDeEmpresas:
+  self.trabajador_Base->select(tb | tb.empresa_en_que_trabaja->includes(self))->size() +
+  self.gerente->select(g | g.empresa_Gestionada->includes(self))->size() +
+  self.director->select(d | d.empresa_Dirigida->includes(self))->size() <= 3
+
