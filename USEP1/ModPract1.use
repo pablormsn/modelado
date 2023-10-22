@@ -96,7 +96,7 @@ inv DistintoGerenteYDirector:
     self.gerente->notEmpty() and self.director->notEmpty() implies self.gerente <> self.director
 
 context Empresa
-inv SalarioCorrecto:
+inv SalarioSegunRol:
   self.director.salario > self.gerente.salario and
   self.trabajador_Base->forAll(tb | tb.salario < self.gerente.salario)
 
@@ -106,3 +106,24 @@ inv LimiteDeEmpresas:
   self.gerente->select(g | g.empresa_Gestionada->includes(self))->size() +
   self.director->select(d | d.empresa_Dirigida->includes(self))->size() <= 3
 
+context Empresa
+inv UnaPersonaUnRolEnMismaEmpresa:
+      self.trabajador_Base->forAll(tb | 
+        self.gerente <> self.director and
+        self.gerente <> tb and
+        self.director <> tb
+      )
+
+context Pedido
+inv PedidoSuperaValorMinimo:
+  self.precioTotal >= self.empresa.valorMinimoPedido
+
+context Pedido
+inv ArticulosEnAlmacen:
+  self.producto_en_pedido->forAll(item | 
+    self.empresa.producto_que_posee_la_empresa->includes(item)
+  )
+
+context Persona
+inv LimiteTiposArticulosPorPersona:
+  self.producto_que_posee_la_persona->collect(p | p)->asSet()->size() <= 10
