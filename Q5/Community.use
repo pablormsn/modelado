@@ -13,7 +13,7 @@ attributes
 birthYear: Integer
 deathYear: Integer
 age: Integer
-isDead: Boolean derive = self.deathYear != null
+isDead: Boolean derive = self.deathYear <> null
 state: State
 stage: Stage
 end
@@ -63,3 +63,35 @@ inv NotMarriedInFuture:
     (self.startYear <= self.husband.community.clock.NOW) and  (self.startYear <= self.wife.community.clock.NOW)
 
 context Marriage
+inv NoDivorceBeforeMarriage:
+    (self.endYear >= self.startYear) or (self.endYear = null)
+
+context Clock
+inv OnlyOneClock:
+    Clock.allInstances()->size() = 1
+
+context Marriage
+inv NoSelfMarriage:
+    self.husband <> self.wife
+
+context Person
+inv Monogamy:
+    let activeMarriages : Set(Marriage) = 
+        Marriage.allInstances()
+            ->select(m | m.endYear = null and (m.husband = self or m.wife = self)) 
+    in
+    activeMarriages->size() <= 1
+
+context Person
+inv ChildrenNotMarried:
+    if self.stage = Stage::Child then
+        let activeMarriages : Set(Marriage) = 
+            Marriage.allInstances()
+                ->select(m | m.endYear = null and (m.husband = self or m.wife = self)) 
+        in
+        activeMarriages->isEmpty()
+    else
+        true
+    endif
+
+
