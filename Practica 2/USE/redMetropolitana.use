@@ -1,0 +1,64 @@
+model redMetropolitana
+
+class Clock
+attributes
+NOW : Integer
+end
+
+class Linea
+attributes
+Nombre : String
+end
+
+class Estacion
+attributes
+Nombre : String 
+end
+
+class Tren
+attributes
+Direccion : Estacion
+end
+
+class Via
+attributes
+Direccion : Estacion
+end
+
+associationclass Segmento between
+Estacion [*] role estacion1 
+Estacion [*] role estacion2 
+attributes
+Nombre: String
+end
+
+aggregation Transcurrencia between
+Linea [1..*] role linea
+Segmento [1..*] role segmento
+end
+
+composition Vias between
+Segmento [1] role segmento
+Via [2] role via
+end
+
+association Circulacion between
+Tren [1] role tren
+Via [0..1] role via
+end
+
+association Parada between
+Tren [*] role tren
+Estacion [0..1] role estacion
+end
+
+association Ruta between
+Tren [*] role tren
+Linea [1] role linea
+end
+
+association Time between
+Clock [1] role clock
+Linea [1..*] role linea
+end
+
