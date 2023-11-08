@@ -62,3 +62,14 @@ Clock [1] role clock
 Linea [1..*] role linea
 end
 
+constraints
+
+context Clock
+inv OnlyOneClock:
+    Clock.allInstances()->size() = 1
+
+context Estacion
+inv NoConectadaConsigoMisma:
+    self.estacion1 <> self.estacion2
+
+
