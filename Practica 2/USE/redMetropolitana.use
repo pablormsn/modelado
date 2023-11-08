@@ -89,3 +89,8 @@ context Segmento
 inv DiferenteDireccionVia:
     self.via -> forAll(x | 
         self.via -> forAll(y | y <> x implies x.Direccion <> y.Direccion))
+
+context Via
+inv UnSoloTrenEnVia:
+    self.tren->size() <= 1
+
