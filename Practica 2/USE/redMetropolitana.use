@@ -34,7 +34,7 @@ end
 
 aggregation Transcurrencia between
 Linea [1..*] role linea
-Segmento [1..*] role segmento
+Segmento [1..*] role segmentos
 end
 
 composition Vias between
@@ -68,8 +68,24 @@ context Clock
 inv OnlyOneClock:
     Clock.allInstances()->size() = 1
 
-context Estacion
+context Segmento
 inv NoConectadaConsigoMisma:
     self.estacion1 <> self.estacion2
 
+--context Linea
+--inv SegmentosEnLineasDistintas:
+  --  self.segmentos->forAll(s1 |
+    --   self.segmentos->exists(s2 |
+      --      s1 <> s2 and s1.estacion1 = s2.estacion1 and s1.estacion2 = s2.estacion2
+     --   )
+  --  )
 
+context Linea 
+inv DiferentesLineas:
+    Linea.allInstances() -> excluding(self) -> forAll(x | x.segmentos <> self.segmentos)
+
+
+context Segmento 
+inv DiferenteDireccionVia:
+    self.via -> forAll(x | 
+        self.via -> forAll(y | y <> x implies x.Direccion <> y.Direccion))
