@@ -76,17 +76,13 @@ context Clock
 inv OnlyOneClock:
     Clock.allInstances()->size() = 1
 
---context Segmento
---inv NoConectadaConsigoMisma:
-  --  self.estacion1 <> self.estacion2
+context Segmento
+inv NoConectadaConsigoMisma:
+    self.vias.estacionDestino <> self.vias.estacionOrigen
 
---context Linea
---inv SegmentosEnLineasDistintas:
-   -- self.segmentos->forAll(s1 |
-     -- self.segmentos->exists(s2 |
-      --      s1 <> s2 and s1.estacion1 = s2.estacion1 and s1.estacion2 = s2.estacion2
-     --   )
-   -- )
+context Estacion 
+inv SegmentosEnLineasDistintas:
+    self.viaOrigen.segmento.linea->intersection(self.viaDestino.segmento.linea)->isEmpty()
 
 context Linea 
 inv DiferentesLineas:
@@ -101,10 +97,6 @@ inv DiferenteDireccionVia:
 context Via
 inv UnSoloTrenEnVia:
     self.tren->size() <= 1
-
---context Via
---inv EstacionDeDireccionEnElSegmento:
- --   (self.Direccion = self.segmento.estacion1) or (self.Direccion = self.segmento.estacion2)
 
 context Tren
 inv EstacionXORVia:
