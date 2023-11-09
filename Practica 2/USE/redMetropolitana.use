@@ -17,17 +17,15 @@ end
 
 class Tren
 attributes
-Direccion : Estacion
+Direccion : Boolean
 end
 
 class Via
 attributes
-Direccion : Estacion
+Direccion : Boolean
 end
 
-associationclass Segmento between
-Estacion [*] role estacion1 
-Estacion [*] role estacion2 
+class Segmento 
 attributes
 Nombre: String
 end
@@ -39,7 +37,7 @@ end
 
 composition Vias between
 Segmento [1] role segmento
-Via [2] role via
+Via [2] role vias
 end
 
 association Circulacion between
@@ -62,23 +60,33 @@ Clock [1] role clock
 Linea [1..*] role linea
 end
 
+association Destino between
+Estacion [1] role estacionDestino
+Via [1..*] role viaDestino
+end
+
+association Origen between
+Estacion [1] role estacionOrigen
+Via [1..*] role viaOrigen
+end
+
 constraints
 
 context Clock
 inv OnlyOneClock:
     Clock.allInstances()->size() = 1
 
-context Segmento
-inv NoConectadaConsigoMisma:
-    self.estacion1 <> self.estacion2
+--context Segmento
+--inv NoConectadaConsigoMisma:
+  --  self.estacion1 <> self.estacion2
 
 --context Linea
 --inv SegmentosEnLineasDistintas:
-  --  self.segmentos->forAll(s1 |
-    --   self.segmentos->exists(s2 |
+   -- self.segmentos->forAll(s1 |
+     -- self.segmentos->exists(s2 |
       --      s1 <> s2 and s1.estacion1 = s2.estacion1 and s1.estacion2 = s2.estacion2
      --   )
-  --  )
+   -- )
 
 context Linea 
 inv DiferentesLineas:
@@ -87,10 +95,18 @@ inv DiferentesLineas:
 
 context Segmento 
 inv DiferenteDireccionVia:
-    self.via -> forAll(x | 
-        self.via -> forAll(y | y <> x implies x.Direccion <> y.Direccion))
+    self.vias -> forAll(x | 
+        self.vias -> forAll(y | y <> x implies x.Direccion <> y.Direccion))
 
 context Via
 inv UnSoloTrenEnVia:
     self.tren->size() <= 1
 
+--context Via
+--inv EstacionDeDireccionEnElSegmento:
+ --   (self.Direccion = self.segmento.estacion1) or (self.Direccion = self.segmento.estacion2)
+
+context Tren
+inv EstacionXORVia:
+    (self.estacion -> isEmpty() or self.via -> isEmpty()) and
+    not (self.estacion -> isEmpty() and self.via -> isEmpty())
