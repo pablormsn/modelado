@@ -17,7 +17,106 @@ end
 
 class Tren
 attributes
+isReady : Boolean init : false
+isBroken : Boolean init : false
 Direccion : Boolean
+operations
+    emptyNextVia() : Boolean = self.estacion.viaDestino -> forAll(x | x.segmento.lineaS -> select(y
+        | y = self.lineaT) -> size = 1 and x.Direccion = self.Direccion implies x.tren -> size() = 0)
+advance()
+    begin
+        if(self.estacion -> size() = 1) then self.advanceFromStation();
+        else
+            self.advanceToStation();
+        end
+    end
+    pre canAdvance : self.via <> null xor self.estacion <> null
+    post advancedFromStation : self.estacion@pre -> size() = 1 implies self.via@pre -> size() = 0
+    post advancedFromVia : self.via@pre -> size() = 1 implies self.estacion@pre -> size() = 0
+advanceFromStation()
+    begin
+        if(not self.isBroken) then
+            if (self.isReady) then
+                self.advanceToVia();
+            else
+                self.isReady := true;
+            end
+        end
+    end
+    pre canAdvanceFromStation : self.estacion -> size() = 1
+    post : not self.isBroken@pre and not self.isReady@pre implies self.isReady
+advanceToVia()
+    begin
+        if(self.emptyNextVia()) then
+            insert (self,self.estacion.viaDestino -> select(x | x.segmento.lineaS -> select(y | y =
+                self.lineaT) -> size = 1 and x.Direccion = self.Direccion) -> asSequence() -> first()) into Circulacion;
+            delete (self,self.estacion) from Parada;
+            self.isReady := false;
+        end
+    end
+    pre canAdvanceToVia : not self.isBroken and self.isReady
+    post : self.estacion.viaDestino@pre -> forAll(x | x.segmento.lineaS@pre -> select(y | y =
+        self.lineaT@pre) -> size = 1 and x.Direccion@pre = self.Direccion@pre implies x.tren@pre -> size() = 0) implies
+        (self.via -> size() = 1 and self.estacion -> size() = 0 and not self.isReady)
+advanceToStation()
+    begin
+        if(self.via.estacionDestino.viaDestino -> select(x | x.segmento.lineaS -> select(y | y =
+            self.lineaT) -> size() = 1) -> size() = 1) then 
+            self.setDirection();
+        end;
+        insert (self, self.via.estacionDestino) into Parada;
+        delete (self, self.via) from Circulacion;
+    end
+    pre canAdvanceToStation : self.via -> size() = 1
+    post : self.via -> size() = 0 and self.estacion -> size() = 1
+setDirection()
+    begin
+        if(self.Direccion) then self.Direccion := false;
+        else self.Direccion := true;
+        end
+    end
+    pre canSetDirection : self.via.estacionDestino.viaDestino -> select(x | x.segmento.lineaS ->
+            select(y | y = self.lineaT) -> size() = 1) -> size() = 1
+    post : if(self.Direccion@pre) then not self.Direccion else self.Direccion endif
+broken()
+    begin
+        self.isBroken := true;
+    end
+    pre notBroken : not self.isBroken
+    post broken : self.isBroken
+repair()
+    begin
+    self.isBroken := false;
+    end
+    pre notRepaired : self.isBroken and self.estacion -> size() = 1
+    post repaired : not self.isBroken
+statemachines
+    psm Ready
+    states
+        s : initial
+        JustArrived
+        Stopped [self.estacion -> size() = 1]
+        Circulating [self.via -> size() = 1]
+    transitions
+        s -> JustArrived
+        JustArrived -> JustArrived { [self.isBroken] advance()}
+        JustArrived -> Stopped {[not self.isBroken and not self.isReady] advance()}
+        Stopped -> Stopped {[self.isBroken or not self.emptyNextVia()] advance()}
+        Stopped -> Circulating {[self.isReady and not self.isBroken and self.emptyNextVia()] advance()}
+        Circulating -> JustArrived {[self.estacion -> size() = 0] advance()}
+    end
+    psm Broken
+    states
+        s : initial
+        Working [not self.isBroken]
+        Broken [self.isBroken]
+    transitions
+        s -> Working
+        Working -> Working {[not self.isBroken] advance()}
+        Working -> Broken {[not self.isBroken] broken()}
+        Broken -> Broken {[self.isBroken] advance()}
+        Broken -> Working {[self.isBroken] repair()}
+    end
 end
 
 class Via
@@ -31,7 +130,7 @@ Nombre: String
 end
 
 aggregation Pertenece between
-Linea [1..*] role linea
+Linea [1..*] role lineaS
 Segmento [1..*] role segmentos
 end
 
@@ -52,12 +151,12 @@ end
 
 association Ruta between
 Tren [*] role tren
-Linea [1] role linea
+Linea [1] role lineaT
 end
 
 association Time between
 Clock [1] role clock
-Linea [1..*] role linea
+Linea [1..*] role lineaC
 end
 
 association Destino between
@@ -69,6 +168,7 @@ association Origen between
 Estacion [1] role estacionDestino
 Via [1..*] role viaOrigen
 end
+
 
 constraints
 
