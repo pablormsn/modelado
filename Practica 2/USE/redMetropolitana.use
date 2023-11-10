@@ -180,9 +180,17 @@ context Segmento
 inv NoConectadaConsigoMisma:
     self.vias -> forAll(x | x.estacionDestino <> x.estacionOrigen)   
 
---context Estacion 
+--context Linea
 --inv SegmentosEnLineasDistintas:
-   -- self.viaOrigen.segmento.linea->intersection(self.viaDestino.segmento.linea)->isEmpty()
+    --self.segmentos -> forAll(s1 | 
+        --self.segmentos -> exists(s2 | 
+            --s1 <> s2 and
+            --(s1.vias.estacionOrigen <> s2.vias.estacionOrigen or
+             --s1.vias.estacionDestino <> s2.vias.estacionDestino) and
+            --(s1.vias.estacionOrigen <> s2.vias.estacionOrigen or
+             --s1.vias.estacionDestino <> s2.vias.estacionDestino)
+        --)
+    --)
 
 context Segmento
 inv ViaBienDefinida:
