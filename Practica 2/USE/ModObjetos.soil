@@ -138,3 +138,46 @@
 !insert (Linea3,Segmento5) into Pertenece
 !insert (Linea3,Segmento6) into Pertenece
 !insert (Linea3,Segmento8) into Pertenece
+!delete (Estacion2,Via2) from Origen
+!insert (Estacion2,Via2) into Destino
+!delete (Estacion2,Via1) from Destino
+!delete (Estacion1,Via1) from Origen
+!insert (Estacion1,Via1) into Destino
+!insert (Estacion2,Via1) into Origen
+!new Tren
+!new Tren
+!new Tren
+!new Tren
+!new Tren
+!new Tren
+!insert (Tren1,Linea3) into Ruta
+!insert (Tren2,Linea3) into Ruta
+!insert (Tren4,Linea2) into Ruta
+!insert (Tren3,Linea2) into Ruta
+!insert (Tren3,Estacion6) into Parada
+!insert (Tren4,Estacion6) into Parada
+!insert (Tren6,Linea1) into Ruta
+!insert (Tren5,Linea1) into Ruta
+!insert (Tren6,Estacion3) into Parada
+!insert (Tren5,Estacion3) into Parada
+!insert (Tren1,Estacion7) into Parada
+!insert (Tren2,Via13) into Circulacion
+!Via5.Direccion := true
+!Via9.Direccion := true
+!Via11.Direccion := true
+!Via12.Direccion := false
+!Via10.Direccion := false
+!Via8.Direccion := true
+!Via7.Direccion := false
+!Via3.Direccion := true
+!Via4.Direccion := false
+!Via16.Direccion := true
+!Via15.Direccion := false
+!Via14.Direccion := true
+!Via13.Direccion := false
+!Tren1.Direccion := true
+!Tren2.Direccion := false
+!Tren3.Direccion := true
+!Tren4.Direccion := false
+!Tren5.Direccion := true
+!Tren6.Direccion := false
