@@ -17,6 +17,8 @@ end
 
 class Tren
 attributes
+isReady : Boolean init : false
+isBroken : Boolean init : false
 Direccion : Boolean
 operations
     emptyNextVia() : Boolean = self.estacion.viaDestino -> forAll(x | x.segmento.lineaS -> select(y
@@ -100,7 +102,7 @@ statemachines
         JustArrived -> Stopped {[not self.isBroken and not self.isReady] advance()}
         Stopped -> Stopped {[self.isBroken or not self.emptyNextVia()] advance()}
         Stopped -> Circulating {[self.isReady and not self.isBroken and self.emptyNextVia()] advance()}
-    Circulating -> JustArrived {[self.estacion -> size() = 0] advance()}
+        Circulating -> JustArrived {[self.estacion -> size() = 0] advance()}
     end
     psm Broken
     states
