@@ -78,11 +78,15 @@ inv OnlyOneClock:
 
 context Segmento
 inv NoConectadaConsigoMisma:
-    self.vias.estacionDestino <> self.vias.estacionOrigen
+    self.vias -> forAll(x | x.estacionDestino <> x.estacionOrigen)   
 
 --context Estacion 
 --inv SegmentosEnLineasDistintas:
    -- self.viaOrigen.segmento.linea->intersection(self.viaDestino.segmento.linea)->isEmpty()
+
+context Segmento
+inv ViaBienDefinida:
+self.vias -> forAll(x | x.estacionDestino.viaDestino->excludes(x) and x.estacionOrigen.viaOrigen->excludes(x))   
 
 context Linea 
 inv DiferentesLineas:
