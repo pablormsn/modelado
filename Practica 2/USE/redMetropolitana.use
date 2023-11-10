@@ -22,7 +22,7 @@ isBroken : Boolean init : false
 Direccion : Boolean
 operations
     emptyNextVia() : Boolean = self.estacion.viaDestino -> forAll(x | x.segmento.lineaS -> select(y
-        | y = self.linea) -> size = 1 and x.Direccion = self.Direction implies x.tren -> size() = 0)
+        | y = self.lineaT) -> size = 1 and x.Direccion = self.Direction implies x.tren -> size() = 0)
 advance()
     begin
         if(self.estacion -> size() = 1) then self.advanceFromStation()
