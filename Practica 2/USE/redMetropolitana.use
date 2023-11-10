@@ -22,10 +22,10 @@ isBroken : Boolean init : false
 Direccion : Boolean
 operations
     emptyNextVia() : Boolean = self.estacion.viaDestino -> forAll(x | x.segmento.lineaS -> select(y
-        | y = self.linea) -> size = 1 and x.Direccion = self.Direction implies x.tren -> size() = 0)
+        | y = self.lineaT) -> size = 1 and x.Direccion = self.Direccion implies x.tren -> size() = 0)
 advance()
     begin
-        if(self.estacion -> size() = 1) then self.advanceFromStation()
+        if(self.estacion -> size() = 1) then self.advanceFromStation();
         else
             self.advanceToStation();
         end
@@ -37,9 +37,9 @@ advanceFromStation()
     begin
         if(not self.isBroken) then
             if (self.isReady) then
-                self.advanceToVia()
+                self.advanceToVia();
             else
-                self.isReady := true
+                self.isReady := true;
             end
         end
     end
@@ -49,9 +49,9 @@ advanceToVia()
     begin
         if(self.emptyNextVia()) then
             insert (self,self.estacion.viaDestino -> select(x | x.segmento.lineaS -> select(y | y =
-                self.lineaT) -> size = 1 and x.Direccion = self.Direccion) -> asSequence() -> first()) into Circulacion
-            delete (self,self.estacion) from Parada
-            self.isReady := false
+                self.lineaT) -> size = 1 and x.Direccion = self.Direccion) -> asSequence() -> first()) into Circulacion;
+            delete (self,self.estacion) from Parada;
+            self.isReady := false;
         end
     end
     pre canAdvanceToVia : not self.isBroken and self.isReady
@@ -60,32 +60,33 @@ advanceToVia()
         (self.via -> size() = 1 and self.estacion -> size() = 0 and not self.isReady)
 advanceToStation()
     begin
-        if(self.via.destino.viaDestino -> select(x | x.segmento.lineaS -> select(y | y =
-            self.lineaT) -> size() = 1) -> size() = 1) then self.setDirection()
-        end
-        insert (self, self.via.estacionDestino) into Parada
-        delete (self, self.via) from Circulacion
+        if(self.via.estacionDestino.viaDestino -> select(x | x.segmento.lineaS -> select(y | y =
+            self.lineaT) -> size() = 1) -> size() = 1) then 
+            self.setDirection();
+        end;
+        insert (self, self.via.estacionDestino) into Parada;
+        delete (self, self.via) from Circulacion;
     end
     pre canAdvanceToStation : self.via -> size() = 1
     post : self.via -> size() = 0 and self.estacion -> size() = 1
 setDirection()
     begin
-        if(self.Direccion) then self.Direccion := false
-        else self.Direccion := true
+        if(self.Direccion) then self.Direccion := false;
+        else self.Direccion := true;
         end
     end
-    pre canSetDirection : self.via.estacionDestino.viaDestino -> select(x | x.Segmento.lineaS ->
+    pre canSetDirection : self.via.estacionDestino.viaDestino -> select(x | x.segmento.lineaS ->
             select(y | y = self.lineaT) -> size() = 1) -> size() = 1
-    post : if(self.Direccion@pre) then not self.Direccion else self.direction endif
+    post : if(self.Direccion@pre) then not self.Direccion else self.Direccion endif
 broken()
     begin
-        self.isBroken := true
+        self.isBroken := true;
     end
     pre notBroken : not self.isBroken
     post broken : self.isBroken
 repair()
     begin
-    self.isBroken := false
+    self.isBroken := false;
     end
     pre notRepaired : self.isBroken and self.estacion -> size() = 1
     post repaired : not self.isBroken
