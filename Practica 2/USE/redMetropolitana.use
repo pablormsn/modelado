@@ -3,6 +3,13 @@ model redMetropolitana
 class Clock
 attributes
 NOW : Integer
+operations
+tick()
+    begin
+        self.NOW := self.NOW + 1;
+        for t in Tren.allInstances() do t.advance() end;
+    end
+post : self.NOW = self.NOW@pre + 1
 end
 
 class Linea
@@ -139,9 +146,10 @@ Segmento [1] role segmento
 Via [2] role vias
 end
 
+--Revisar la multiplicidad de via
 association Circulacion between
-Tren [1] role tren
-Via [0..1] role via
+Tren [0..1] role tren
+Via [1] role via
 end
 
 association Parada between
