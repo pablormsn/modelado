@@ -30,7 +30,7 @@ attributes
 Nombre: String
 end
 
-aggregation Transcurrencia between
+aggregation Pertenece between
 Linea [1..*] role linea
 Segmento [1..*] role segmentos
 end
@@ -61,12 +61,12 @@ Linea [1..*] role linea
 end
 
 association Destino between
-Estacion [1] role estacionDestino
+Estacion [1] role estacionOrigen
 Via [1..*] role viaDestino
 end
 
 association Origen between
-Estacion [1] role estacionOrigen
+Estacion [1] role estacionDestino
 Via [1..*] role viaOrigen
 end
 
@@ -80,9 +80,9 @@ context Segmento
 inv NoConectadaConsigoMisma:
     self.vias.estacionDestino <> self.vias.estacionOrigen
 
-context Estacion 
-inv SegmentosEnLineasDistintas:
-    self.viaOrigen.segmento.linea->intersection(self.viaDestino.segmento.linea)->isEmpty()
+--context Estacion 
+--inv SegmentosEnLineasDistintas:
+   -- self.viaOrigen.segmento.linea->intersection(self.viaDestino.segmento.linea)->isEmpty()
 
 context Linea 
 inv DiferentesLineas:
