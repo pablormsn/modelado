@@ -7,7 +7,7 @@ operations
 tick()
     begin
         self.NOW := self.NOW + 1;
-        for t in Tren.allInstances() do t.advance() end;
+        for t in Tren.allInstances() do t.avanza() end;
     end
 post : self.NOW = self.NOW@pre + 1
 end
