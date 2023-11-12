@@ -24,105 +24,105 @@ end
 
 class Tren
 attributes
-isReady : Boolean init : false
-isBroken : Boolean init : false
+estaListo : Boolean init : false
+estaRoto : Boolean init : false
 Direccion : Boolean
 operations
-    emptyNextVia() : Boolean = self.estacion.viaDestino -> forAll(x | x.segmento.lineaS -> select(y
+    vaciaSiguienteVia() : Boolean = self.estacion.viaDestino -> forAll(x | x.segmento.lineaS -> select(y
         | y = self.lineaT) -> size = 1 and x.Direccion = self.Direccion implies x.tren -> size() = 0)
-advance()
+avanza()
     begin
-        if(self.estacion -> size() = 1) then self.advanceFromStation();
+        if(self.estacion -> size() = 1) then self.avanzaDesdeEstacion();
         else
-            self.advanceToStation();
+            self.avanzaHaciaEstacion();
         end
     end
-    pre canAdvance : self.via <> null xor self.estacion <> null
-    post advancedFromStation : self.estacion@pre -> size() = 1 implies self.via@pre -> size() = 0
-    post advancedFromVia : self.via@pre -> size() = 1 implies self.estacion@pre -> size() = 0
-advanceFromStation()
+    pre puedeAvanza : self.via <> null xor self.estacion <> null
+    post avanzaDesdeEstacion : self.estacion@pre -> size() = 1 implies self.via@pre -> size() = 0
+    post avanzaDesdeVia : self.via@pre -> size() = 1 implies self.estacion@pre -> size() = 0
+avanzaDesdeEstacion()
     begin
-        if(not self.isBroken) then
-            if (self.isReady) then
-                self.advanceToVia();
+        if(not self.estaRoto) then
+            if (self.estaListo) then
+                self.avanzaHaciaVia();
             else
-                self.isReady := true;
+                self.estaListo := true;
             end
         end
     end
-    pre canAdvanceFromStation : self.estacion -> size() = 1
-    post : not self.isBroken@pre and not self.isReady@pre implies self.isReady
-advanceToVia()
+    pre puedeAvanzaDesdeEstacion : self.estacion -> size() = 1
+    post : not self.estaRoto@pre and not self.estaListo@pre implies self.estaListo
+avanzaHaciaVia()
     begin
-        if(self.emptyNextVia()) then
+        if(self.vaciaSiguienteVia()) then
             insert (self,self.estacion.viaDestino -> select(x | x.segmento.lineaS -> select(y | y =
                 self.lineaT) -> size = 1 and x.Direccion = self.Direccion) -> asSequence() -> first()) into Circulacion;
             delete (self,self.estacion) from Parada;
-            self.isReady := false;
+            self.estaListo := false;
         end
     end
-    pre canAdvanceToVia : not self.isBroken and self.isReady
+    pre puedeAvanzaHaciaVia : not self.estaRoto and self.estaListo
     post : self.estacion.viaDestino@pre -> forAll(x | x.segmento.lineaS@pre -> select(y | y =
         self.lineaT@pre) -> size = 1 and x.Direccion@pre = self.Direccion@pre implies x.tren@pre -> size() = 0) implies
-        (self.via -> size() = 1 and self.estacion -> size() = 0 and not self.isReady)
-advanceToStation()
+        (self.via -> size() = 1 and self.estacion -> size() = 0 and not self.estaListo)
+avanzaHaciaEstacion()
     begin
         if(self.via.estacionDestino.viaDestino -> select(x | x.segmento.lineaS -> select(y | y =
             self.lineaT) -> size() = 1) -> size() = 1) then 
-            self.setDirection();
+            self.setDireccion();
         end;
         insert (self, self.via.estacionDestino) into Parada;
         delete (self, self.via) from Circulacion;
     end
-    pre canAdvanceToStation : self.via -> size() = 1
+    pre puedeAvanzaHaciaEstacion : self.via -> size() = 1
     post : self.via -> size() = 0 and self.estacion -> size() = 1
-setDirection()
+setDireccion()
     begin
         if(self.Direccion) then self.Direccion := false;
         else self.Direccion := true;
         end
     end
-    pre canSetDirection : self.via.estacionDestino.viaDestino -> select(x | x.segmento.lineaS ->
+    pre puedeSetDireccion : self.via.estacionDestino.viaDestino -> select(x | x.segmento.lineaS ->
             select(y | y = self.lineaT) -> size() = 1) -> size() = 1
     post : if(self.Direccion@pre) then not self.Direccion else self.Direccion endif
-broken()
+roto()
     begin
-        self.isBroken := true;
+        self.estaRoto := true;
     end
-    pre notBroken : not self.isBroken
-    post broken : self.isBroken
-repair()
+    pre noRoto : not self.estaRoto
+    post roto : self.estaRoto
+reparar()
     begin
-    self.isBroken := false;
+    self.estaRoto := false;
     end
-    pre notRepaired : self.isBroken and self.estacion -> size() = 1
-    post repaired : not self.isBroken
+    pre noReparado : self.estaRoto and self.estacion -> size() = 1
+    post reparado : not self.estaRoto
 statemachines
-    psm Ready
+    psm Listo
     states
         s : initial
-        JustArrived
-        Stopped [self.estacion -> size() = 1]
-        Circulating [self.via -> size() = 1]
+        RecienLLegado
+        Parado [self.estacion -> size() = 1]
+        Circulando [self.via -> size() = 1]
     transitions
-        s -> JustArrived
-        JustArrived -> JustArrived { [self.isBroken] advance()}
-        JustArrived -> Stopped {[not self.isBroken and not self.isReady] advance()}
-        Stopped -> Stopped {[self.isBroken or not self.emptyNextVia()] advance()}
-        Stopped -> Circulating {[self.isReady and not self.isBroken and self.emptyNextVia()] advance()}
-        Circulating -> JustArrived {[self.estacion -> size() = 0] advance()}
+        s -> RecienLLegado
+        RecienLLegado -> RecienLLegado { [self.estaRoto]avanza()}
+        RecienLLegado -> Parado {[not self.estaRoto and not self.estaListo]avanza()}
+        Parado -> Parado {[self.estaRoto or not self.vaciaSiguienteVia()]avanza()}
+        Parado -> Circulando {[self.estaListo and not self.estaRoto and self.vaciaSiguienteVia()]avanza()}
+        Circulando -> RecienLLegado {[self.estacion -> size() = 0] avanza()}
     end
-    psm Broken
+    psm Roto
     states
         s : initial
-        Working [not self.isBroken]
-        Broken [self.isBroken]
+        Trabajando [not self.estaRoto]
+        Roto [self.estaRoto]
     transitions
-        s -> Working
-        Working -> Working {[not self.isBroken] advance()}
-        Working -> Broken {[not self.isBroken] broken()}
-        Broken -> Broken {[self.isBroken] advance()}
-        Broken -> Working {[self.isBroken] repair()}
+        s -> Trabajando
+        Trabajando -> Trabajando {[not self.estaRoto]avanza()}
+        Trabajando -> Roto {[not self.estaRoto] roto()}
+        Roto -> Roto {[self.estaRoto]avanza()}
+        Roto -> Trabajando {[self.estaRoto] reparar()}
     end
 end
 
