@@ -296,7 +296,7 @@
       </children>
       <children xmi:type="notation:DecorationNode" xmi:id="_7ePakXpxEe6Akua3G85E0w" type="Association_NameLabel">
         <styles xmi:type="notation:BooleanValueStyle" xmi:id="_8MUokHpxEe6Akua3G85E0w" name="IS_UPDATED_POSITION" booleanValue="true"/>
-        <layoutConstraint xmi:type="notation:Location" xmi:id="_7ePaknpxEe6Akua3G85E0w" x="-100" y="20"/>
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_7ePaknpxEe6Akua3G85E0w" x="-22" y="31"/>
       </children>
       <children xmi:type="notation:DecorationNode" xmi:id="_7ePak3pxEe6Akua3G85E0w" type="Association_TargetRoleLabel">
         <styles xmi:type="notation:BooleanValueStyle" xmi:id="_8MeZkHpxEe6Akua3G85E0w" name="IS_UPDATED_POSITION" booleanValue="true"/>
