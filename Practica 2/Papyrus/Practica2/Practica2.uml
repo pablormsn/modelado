@@ -7,24 +7,24 @@
     <ownedAttribute xmi:type="uml:Property" xmi:id="_iSa9QHpvEe6Akua3G85E0w" name="Direccion" visibility="public">
       <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#Boolean"/>
     </ownedAttribute>
-    <ownedAttribute xmi:type="uml:Property" xmi:id="_E188cID3Ee6nrf7zp7YHKg" name="isReady">
+    <ownedAttribute xmi:type="uml:Property" xmi:id="_E188cID3Ee6nrf7zp7YHKg" name="estaListo">
       <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#Boolean"/>
     </ownedAttribute>
-    <ownedAttribute xmi:type="uml:Property" xmi:id="_YefpUID3Ee6nrf7zp7YHKg" name="isBroken">
+    <ownedAttribute xmi:type="uml:Property" xmi:id="_YefpUID3Ee6nrf7zp7YHKg" name="estaRoto">
       <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#Boolean"/>
     </ownedAttribute>
-    <ownedOperation xmi:type="uml:Operation" xmi:id="_5VbDEID3Ee6nrf7zp7YHKg" name="emptyNextVia">
+    <ownedOperation xmi:type="uml:Operation" xmi:id="_5VbDEID3Ee6nrf7zp7YHKg" name="vaciaSiguienteVia">
       <ownedParameter xmi:type="uml:Parameter" xmi:id="_Z5Cp0ID5Ee6nrf7zp7YHKg" direction="return">
         <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#Boolean"/>
       </ownedParameter>
     </ownedOperation>
-    <ownedOperation xmi:type="uml:Operation" xmi:id="_dUwiwID5Ee6nrf7zp7YHKg" name="advance"/>
-    <ownedOperation xmi:type="uml:Operation" xmi:id="_rbzV8ID5Ee6nrf7zp7YHKg" name="advanceFromStation"/>
-    <ownedOperation xmi:type="uml:Operation" xmi:id="_wCyvMID5Ee6nrf7zp7YHKg" name="advanceToVia"/>
-    <ownedOperation xmi:type="uml:Operation" xmi:id="_zOa9sID5Ee6nrf7zp7YHKg" name="advanceToStation"/>
-    <ownedOperation xmi:type="uml:Operation" xmi:id="_2-n44ID5Ee6nrf7zp7YHKg" name="setDirection"/>
-    <ownedOperation xmi:type="uml:Operation" xmi:id="_4qIYcID5Ee6nrf7zp7YHKg" name="broken" isQuery="true"/>
-    <ownedOperation xmi:type="uml:Operation" xmi:id="_68T2cID5Ee6nrf7zp7YHKg" name="repair"/>
+    <ownedOperation xmi:type="uml:Operation" xmi:id="_dUwiwID5Ee6nrf7zp7YHKg" name="avanza"/>
+    <ownedOperation xmi:type="uml:Operation" xmi:id="_rbzV8ID5Ee6nrf7zp7YHKg" name="avanzaDesdeEstacion"/>
+    <ownedOperation xmi:type="uml:Operation" xmi:id="_wCyvMID5Ee6nrf7zp7YHKg" name="avanzaHaciaVia"/>
+    <ownedOperation xmi:type="uml:Operation" xmi:id="_zOa9sID5Ee6nrf7zp7YHKg" name="avanzaHaciaEstacion"/>
+    <ownedOperation xmi:type="uml:Operation" xmi:id="_2-n44ID5Ee6nrf7zp7YHKg" name="setDireccion"/>
+    <ownedOperation xmi:type="uml:Operation" xmi:id="_4qIYcID5Ee6nrf7zp7YHKg" name="roto" isQuery="true"/>
+    <ownedOperation xmi:type="uml:Operation" xmi:id="_68T2cID5Ee6nrf7zp7YHKg" name="reparar"/>
   </packagedElement>
   <packagedElement xmi:type="uml:Class" xmi:id="_lwK2gHpvEe6Akua3G85E0w" name="Estacion">
     <ownedAttribute xmi:type="uml:Property" xmi:id="_nCNGIHpvEe6Akua3G85E0w" name="Nombre">
@@ -78,6 +78,7 @@
     <ownedAttribute xmi:type="uml:Property" xmi:id="_Mp7DcHpyEe6Akua3G85E0w" name="NOW">
       <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#Integer"/>
     </ownedAttribute>
+    <ownedOperation xmi:type="uml:Operation" xmi:id="__ksgwIFPEe62sP3IxRDUUg" name="tick"/>
   </packagedElement>
   <packagedElement xmi:type="uml:Association" xmi:id="_QSmaUHpyEe6Akua3G85E0w" name="Time" memberEnd="_QSmaU3pyEe6Akua3G85E0w _QSnBYnpyEe6Akua3G85E0w">
     <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_QSmaUXpyEe6Akua3G85E0w" source="org.eclipse.papyrus">
