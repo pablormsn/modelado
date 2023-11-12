@@ -56,7 +56,7 @@ avanzaHaciaVia()
     begin
         if(self.vaciaSiguienteVia()) then
             insert (self,self.estacion.viaDestino -> select(x | x.segmento.lineaS -> select(y | y =
-                self.lineaT) -> size = 1 and x.Direccion = self.Direccion) -> asSequence() -> first()) into Circulacion;
+            self.lineaT) -> size = 1 and x.Direccion = self.Direccion) -> asSequence() -> first()) into Circulacion;
             delete (self,self.estacion) from Parada;
             self.estaListo := false;
         end
