@@ -181,3 +181,7 @@
 !Tren4.Direccion := false
 !Tren5.Direccion := true
 !Tren6.Direccion := false
+!new Clock
+!insert (Clock1,Linea2) into Time
+!insert (Clock1,Linea3) into Time
+!insert (Clock1,Linea1) into Time
