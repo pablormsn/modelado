@@ -367,4 +367,26 @@
       <value xmi:type="uml:LiteralBoolean" xmi:id="_35dP0IEBEe6nrf7zp7YHKg" value="true"/>
     </slot>
   </packagedElement>
+  <packagedElement xmi:type="uml:StateMachine" xmi:id="_Ge59AIFUEe62sP3IxRDUUg" name="Roto">
+    <region xmi:type="uml:Region" xmi:id="_GxilIIFUEe62sP3IxRDUUg" name="Region1">
+      <transition xmi:type="uml:Transition" xmi:id="_SEKI4IFUEe62sP3IxRDUUg" source="_MTyswIFUEe62sP3IxRDUUg" target="_PM5A0IFUEe62sP3IxRDUUg"/>
+      <transition xmi:type="uml:Transition" xmi:id="_vDqlIIFUEe62sP3IxRDUUg" name="[not self.estaRoto and not self.estaListo]avanza()" source="_PM5A0IFUEe62sP3IxRDUUg" target="_TfwkMIFUEe62sP3IxRDUUg"/>
+      <transition xmi:type="uml:Transition" xmi:id="_zC_hcIFUEe62sP3IxRDUUg" name="[not self.estaRoto and not self.estaListo]avanza()" source="_TfwkMIFUEe62sP3IxRDUUg" target="_VmKQAIFUEe62sP3IxRDUUg"/>
+      <transition xmi:type="uml:Transition" xmi:id="_BLhiYIFVEe62sP3IxRDUUg" name="[self.estacion -> size() = 0] avanza()" source="_VmKQAIFUEe62sP3IxRDUUg" target="_PM5A0IFUEe62sP3IxRDUUg"/>
+      <transition xmi:type="uml:Transition" xmi:id="_TgAmYIFVEe62sP3IxRDUUg" name="[self.estaRoto or not self.vaciaSiguienteVia()]avanza()" source="_TfwkMIFUEe62sP3IxRDUUg" target="_TfwkMIFUEe62sP3IxRDUUg"/>
+      <transition xmi:type="uml:Transition" xmi:id="_jGDHIIFVEe62sP3IxRDUUg" name="[self.estaRoto]avanza()" source="_PM5A0IFUEe62sP3IxRDUUg" target="_PM5A0IFUEe62sP3IxRDUUg"/>
+      <transition xmi:type="uml:Transition" xmi:id="_hN6rYIFWEe62sP3IxRDUUg" source="_X82vsIFWEe62sP3IxRDUUg" target="_cFmGsIFWEe62sP3IxRDUUg"/>
+      <transition xmi:type="uml:Transition" xmi:id="_i1lMwIFWEe62sP3IxRDUUg" name="[not self.estaRoto] roto()" source="_cFmGsIFWEe62sP3IxRDUUg" target="_eP73UIFWEe62sP3IxRDUUg"/>
+      <transition xmi:type="uml:Transition" xmi:id="_qsGdEIFWEe62sP3IxRDUUg" name="[self.estaRoto] reparar()" source="_eP73UIFWEe62sP3IxRDUUg" target="_cFmGsIFWEe62sP3IxRDUUg"/>
+      <transition xmi:type="uml:Transition" xmi:id="_vlP9UIFWEe62sP3IxRDUUg" name="[self.estaRoto]avanza()" source="_eP73UIFWEe62sP3IxRDUUg" target="_eP73UIFWEe62sP3IxRDUUg"/>
+      <transition xmi:type="uml:Transition" xmi:id="_5rnJUIFWEe62sP3IxRDUUg" name="[not self.estaRoto]avanza()" source="_cFmGsIFWEe62sP3IxRDUUg" target="_cFmGsIFWEe62sP3IxRDUUg"/>
+      <subvertex xmi:type="uml:Pseudostate" xmi:id="_MTyswIFUEe62sP3IxRDUUg" name="s"/>
+      <subvertex xmi:type="uml:State" xmi:id="_PM5A0IFUEe62sP3IxRDUUg" name="recienLlegado"/>
+      <subvertex xmi:type="uml:State" xmi:id="_TfwkMIFUEe62sP3IxRDUUg" name="Parado"/>
+      <subvertex xmi:type="uml:State" xmi:id="_VmKQAIFUEe62sP3IxRDUUg" name="Circulando"/>
+      <subvertex xmi:type="uml:Pseudostate" xmi:id="_X82vsIFWEe62sP3IxRDUUg" name="s"/>
+      <subvertex xmi:type="uml:State" xmi:id="_cFmGsIFWEe62sP3IxRDUUg" name="Trabajando"/>
+      <subvertex xmi:type="uml:State" xmi:id="_eP73UIFWEe62sP3IxRDUUg" name="Roto"/>
+    </region>
+  </packagedElement>
 </uml:Model>
