@@ -217,5 +217,3 @@
 !delete (Tren1,Estacion7) from Parada
 !insert (Tren1,Estacion4) into Parada
 !Tren2.estaListo := true
-!Tren3.Direccion := false
-!Tren4.Direccion := true
