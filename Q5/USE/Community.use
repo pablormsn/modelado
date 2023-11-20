@@ -21,6 +21,8 @@ operations
     
     marriages(): Integer = Marriage.allInstances()
                      ->select(m | m.endYear = null and (m.husband = self or m.wife = self))->size()
+    
+    
 end
 
 enum Stage {Child, Young, Adult, Elderly, Deceased}
