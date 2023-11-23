@@ -9,6 +9,10 @@ public abstract class Trabajador{
 		this.numeroSeguridadSocial = numeroSeguridadSocial;
 		this.salario = salario;
 	}
+	public Trabajador(String nombre, String numeroSeguridadSocial) {
+		this.nombre = nombre;
+		this.numeroSeguridadSocial = numeroSeguridadSocial;
+	}
 	public String getNombre() {
 		return nombre;
 	}

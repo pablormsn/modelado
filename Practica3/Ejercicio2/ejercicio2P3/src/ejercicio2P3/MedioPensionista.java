@@ -8,10 +8,10 @@ public class MedioPensionista extends Trabajador{
 	
 	
 
-	public MedioPensionista(String nombre, String numeroSeguridadSocial, float salario, Activo a, Pensionista p) {
-		super(nombre, numeroSeguridadSocial, salario);
-		this.perfilActivo = a;
-		this.perfilPensionista = p;
+	public MedioPensionista(String nombre, String numeroSeguridadSocial, float salarioActivo, float salarioPensionista) {
+		super(nombre, numeroSeguridadSocial,(salarioActivo + salarioPensionista));
+		this.perfilActivo = new Activo(nombre,numeroSeguridadSocial, salarioActivo);
+		this.perfilPensionista = new Pensionista(nombre,numeroSeguridadSocial, salarioPensionista);
 	}
 
 
@@ -20,6 +20,7 @@ public class MedioPensionista extends Trabajador{
 	public void incrementar() {
 		perfilActivo.incrementar();
 		perfilPensionista.incrementar();
+		this.salario = nomina();
 		
 	}
 	@Override
