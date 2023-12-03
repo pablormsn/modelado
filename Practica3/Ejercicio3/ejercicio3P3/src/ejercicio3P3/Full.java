@@ -7,7 +7,8 @@ public class Full extends Estado{
 
     @Override
     public void put(Pieza p) {
-
+        assert p!=null;
+        assert size() < bandeja.getCapacidad();
     }
 
     @Override
@@ -17,6 +18,9 @@ public class Full extends Estado{
         }else{
             bandeja.setEstado(new Empty(bandeja));
         }
-        return bandeja.piezas.remove(0);
+
+        Pieza p = bandeja.piezas.remove(0);
+        p.setBandeja(null);
+        return p;
     }
 }

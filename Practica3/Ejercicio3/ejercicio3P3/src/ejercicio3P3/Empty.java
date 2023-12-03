@@ -15,10 +15,13 @@ public class Empty extends Estado{
             bandeja.setEstado(new Full(bandeja));
         }
         bandeja.piezas.add(p);
+        p.setBandeja(bandeja);
+
     }
 
     @Override
     public Pieza get() {
+        assert size() > 0;
         return null;
     }
 }

@@ -14,6 +14,8 @@ public class Normal extends Estado{
             bandeja.setEstado(new Full(bandeja));
         }
         bandeja.piezas.add(p);
+        p.setBandeja(bandeja);
+
 
     }
 
@@ -24,6 +26,8 @@ public class Normal extends Estado{
         }else{
             bandeja.setEstado(new Empty(bandeja));
         }
-        return bandeja.piezas.remove(0);
+        Pieza p = bandeja.piezas.remove(0);
+        p.setBandeja(null);
+        return p;
     }
 }

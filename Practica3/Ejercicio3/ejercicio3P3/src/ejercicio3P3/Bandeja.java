@@ -1,6 +1,7 @@
 package ejercicio3P3;
 
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -30,5 +31,9 @@ public class Bandeja {
 	}
 	public void setEstado(Estado estado) {
 		this.estado = estado;
+	}
+
+	public Enumeration<Pieza> getPiezas() {
+		return java.util.Collections.enumeration(piezas);
 	}
 }
