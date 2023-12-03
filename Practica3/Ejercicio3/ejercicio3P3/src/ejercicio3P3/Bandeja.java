@@ -1,25 +1,34 @@
 package ejercicio3P3;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 public class Bandeja {
 	private int capacidad;
-	private List<Pieza> piezas;
+	public List<Pieza> piezas;
+	private Estado estado;
 	public Bandeja(int capacidad) {
+		assert (capacidad > 0);
 		this.capacidad = capacidad;
-		piezas = new ArrayList<Pieza>();
+		piezas = new LinkedList<>();
+		estado = new Empty(this);
 	}
 	public int getCapacidad() {
+
 		return capacidad;
 	}
 	public void put(Pieza p) {
-		piezas.add(p);
+		estado.put(p);
 	}
 	public Pieza get() {
-		return piezas.remove(0);
+
+		return estado.get();
 	}
 	public int size() {
-		return (capacidad - piezas.size());
+		return (piezas.size());
+	}
+	public void setEstado(Estado estado) {
+		this.estado = estado;
 	}
 }
