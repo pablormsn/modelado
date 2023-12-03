@@ -5,6 +5,10 @@ public abstract class Trabajador{
 	private String numeroSeguridadSocial;
 	protected float salario;
 	public Trabajador(String nombre, String numeroSeguridadSocial, float salario) {
+		assert nombre != null;
+		assert numeroSeguridadSocial != null;
+		assert salario > 0;
+
 		this.nombre = nombre;
 		this.numeroSeguridadSocial = numeroSeguridadSocial;
 		this.salario = salario;

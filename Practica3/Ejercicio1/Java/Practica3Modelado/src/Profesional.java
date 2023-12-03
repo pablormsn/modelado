@@ -10,6 +10,7 @@ public class Profesional {
 	}
 	
 	protected void addAcceso(Acceso a) {
+		assert a != null;
 		this.acceso.add(a);
 	}
 	

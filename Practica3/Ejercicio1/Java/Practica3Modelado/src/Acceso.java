@@ -7,6 +7,11 @@ public class Acceso {
 	private Expediente e;
 	
 	public Acceso(Date fecha, TipoAcceso tipo, Profesional p, Expediente e) {
+		assert fecha != null;
+		assert tipo != null;
+		assert p != null;
+		assert e != null;
+
 		this.fecha = fecha;
 		this.tipo = tipo;
 		this.p = p;

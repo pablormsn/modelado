@@ -12,11 +12,12 @@ public class Paciente {
 	}
 	
 	protected void addExpediente(Expediente e) {
+		assert e != null;
 		expedientes.add(e);
 	}
 	
 	protected void abrirExpediente(Expediente e) throws Exception{
-		
+		assert e != null;
 		if(expedienteAbierto == null) {
 			expedienteAbierto = e;
 			addExpediente(e);
@@ -29,7 +30,7 @@ public class Paciente {
 		if(expedienteAbierto != null) {
 			expedienteAbierto = null;
 		}else {
-			throw new Exception("No hay ningún expediente abierto para este paciente");
+			throw new Exception("No hay ningï¿½n expediente abierto para este paciente");
 		}
 	}
 	
