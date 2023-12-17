@@ -16,7 +16,6 @@ public class SubjectSortingStrategy implements SortingStrategy {
 
     // En la clase Mailbox
     private boolean before(Email email1, Email email2) {
-        // Comparación basada en el asunto (subject)
         return email1.getSubject().compareTo(email2.getSubject()) < 0;
     }
 

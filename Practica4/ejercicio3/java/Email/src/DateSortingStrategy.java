@@ -17,7 +17,6 @@ public class DateSortingStrategy implements SortingStrategy {
     }
 
     private boolean before(Email email1, Email email2) {
-        // Comparación basada en la fecha (asumiendo formato de fecha estándar)
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
         try {
@@ -26,9 +25,8 @@ public class DateSortingStrategy implements SortingStrategy {
 
             return date1.before(date2);
         } catch (Exception e) {
-            // Manejar la excepción si ocurre un problema con el formato de fecha
             e.printStackTrace();
-            return false; // o lanzar una excepción adecuada según tus necesidades
+            return false;
         }
     }
 }

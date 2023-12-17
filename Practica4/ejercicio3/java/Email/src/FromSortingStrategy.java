@@ -2,7 +2,6 @@ import java.util.List;
 
 public class FromSortingStrategy implements SortingStrategy {
 
-        // Implementación específica para ordenar por remitente
         public void sort(List<Email> email) {
             for (int i = 1; i < email.size(); i++ ){
                 for (int j = email.size()-1; j >= i; j--){
@@ -17,7 +16,7 @@ public class FromSortingStrategy implements SortingStrategy {
         }
 
     private boolean before(Email email1, Email email2) {
-        // Comparación basada en el remitente
+
         return email1.getFrom().compareTo(email2.getFrom()) < 0;
     }
 }

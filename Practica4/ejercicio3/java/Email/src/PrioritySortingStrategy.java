@@ -15,7 +15,6 @@ public class PrioritySortingStrategy implements SortingStrategy {
     }
 
     private boolean before(Email email1, Email email2) {
-        // Comparación basada en la prioridad
         return email1.getPriority() < email2.getPriority();
     }
 }

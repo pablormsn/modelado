@@ -18,7 +18,6 @@ public class Mailbox {
     }
 
     public void show() {
-        // Lógica para mostrar correos electrónicos según la estrategia de ordenación
         sortingStrategy.sort(emails);
         for (Email email : emails) {
             System.out.println(email.toString());

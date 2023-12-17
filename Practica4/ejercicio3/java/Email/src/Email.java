@@ -4,7 +4,6 @@ public class Email {
         private String date;
         private int priority;
 
-        // Constructor y métodos de acceso aquí
 
     public Email(String from, String subject, String date, int priority) {
         this.from = from;
