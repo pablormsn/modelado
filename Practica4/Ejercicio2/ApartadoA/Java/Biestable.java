@@ -13,10 +13,6 @@ public class Biestable{
         this.estado.cerrar(this);
     }
     public void estado(){
-        if(this.estado instanceof Rojo){
-            System.out.println("Cerrado");
-        }else{
-            System.out.println("Abierto");
-        }
+        System.out.println(estado);
     }
 }
