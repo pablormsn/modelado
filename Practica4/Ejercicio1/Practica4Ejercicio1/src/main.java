@@ -1,10 +1,9 @@
 public class main {
 
     public static void main(String[] args){
-        XService xservice = new XService();
-        ClientA clientA = new ClientA(xservice);
-        ClientB clientB = new ClientB(xservice);
-        ClientC clientC = new ClientC(xservice);
+        ClientA clientA = new ClientA();
+        ClientB clientB = new ClientB();
+        ClientC clientC = new ClientC();
 
         System.out.println("Cliente A: ");
         clientA.rutina1();

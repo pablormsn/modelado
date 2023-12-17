@@ -1,5 +1,5 @@
 public class FactoryX {
-    public X create(Object obj, XService xService){
-        return new XProxy(obj, xService);
+    public X create(Object obj){
+        return new XProxy(obj,new XService());
     }
 }

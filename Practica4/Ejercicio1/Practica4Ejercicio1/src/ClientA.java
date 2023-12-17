@@ -2,9 +2,9 @@ public class ClientA implements Client{
 
     private X x;
 
-    public ClientA(XService xService){
+    public ClientA(){
         FactoryX factoryX = new FactoryX();
-        x = factoryX.create(this, xService);
+        x = factoryX.create(this);
     }
 
     @Override
