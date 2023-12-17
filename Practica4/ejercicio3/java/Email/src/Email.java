@@ -44,4 +44,8 @@ public class Email {
     public void setPriority(int priority) {
         this.priority = priority;
     }
+    @Override
+    public String toString(){
+        return "From: "+from+"\nSubject: "+subject+"\nDate: "+date+"\nPriority: "+priority+"\n";
+    }
 }
