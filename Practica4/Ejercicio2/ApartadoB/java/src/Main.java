@@ -6,5 +6,21 @@ public class Main {
         biestable.estado();
         biestable.cerrar();
         biestable.estado();
+        System.out.println("------------------------------------------");
+        Triestable triestable = new Triestable();
+        triestable.estado();
+        triestable.abrir();
+        triestable.estado();
+        triestable.abrir();
+        triestable.estado();
+        triestable.cerrar();
+        triestable.estado();
+        triestable.abrir();
+        triestable.estado();
+        triestable.cerrar();
+        triestable.estado();
+        triestable.cerrar();
+        triestable.estado();
+
     }
 }

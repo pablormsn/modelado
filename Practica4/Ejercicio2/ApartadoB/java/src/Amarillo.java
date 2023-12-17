@@ -1,10 +1,9 @@
-public class Rojo implements Estado{
+public class Amarillo implements Estado{
     private final String estado;
 
-    public Rojo() {
-        this.estado = "Rojo";
+    public Amarillo() {
+        this.estado = "Amarillo";
     }
-
     public void abrir(Dispositivo dispositivo){
         dispositivo.getMediador().abrirDispositivo(dispositivo,this);
     }

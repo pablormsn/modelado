@@ -1,8 +1,19 @@
 public class Verde implements Estado{
-    public void abrir(Biestable biestable){
-        System.out.println("Ya esta abierto");
+    private final String estado;
+
+    public Verde() {
+        this.estado = "Verde";
     }
-    public void cerrar(Biestable biestable){
-        biestable.estado = new Rojo();
+
+    public void abrir(Dispositivo dispositivo){
+        dispositivo.getMediador().abrirDispositivo(dispositivo,this);
+    }
+    public void cerrar(Dispositivo dispositivo){
+        dispositivo.getMediador().cerrarDispositivo(dispositivo,this);
+    }
+
+    @Override
+    public String toString() {
+        return estado;
     }
 }

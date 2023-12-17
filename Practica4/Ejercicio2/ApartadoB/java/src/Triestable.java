@@ -1,14 +1,18 @@
-public class Biestable implements Dispositivo{
+public class Triestable implements Dispositivo{
     private Estado estado;
     private Mediador mediador;
-    public Biestable(){
+
+    public Triestable(){
         this.estado = new Rojo();
-        this.mediador = new MediadorConcreto(new EstadoBiestable());
+        this.mediador = new MediadorConcreto(new EstadoTriestable());
     }
-    public void abrir(){
+    @Override
+    public void abrir() {
         this.estado.abrir(this);
     }
-    public void cerrar(){
+
+    @Override
+    public void cerrar() {
         this.estado.cerrar(this);
     }
 
