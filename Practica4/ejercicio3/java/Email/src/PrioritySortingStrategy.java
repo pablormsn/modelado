@@ -2,8 +2,8 @@ import java.util.List;
 
 public class PrioritySortingStrategy implements SortingStrategy {
     public void sort(List<Email> email) {
-        for (int i = 2; i <= email.size(); i++ ){
-            for (int j = email.size(); j >= i; j--){
+        for (int i = 1; i < email.size(); i++ ){
+            for (int j = email.size()-1; j >= i; j--){
                 if (before(email.get(j), email.get(j - 1))) {
                     // intercambiar los mensajes j y j-1
                     Email temp = email.get(j);
