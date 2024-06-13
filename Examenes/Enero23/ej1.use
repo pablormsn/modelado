@@ -1,0 +1,142 @@
+model CursosUniversidades
+
+class Universidad --clase que representa a una universidad
+attributes
+nombre: String
+operations
+matricular(t:Titulacion, a: Asignatura, c:Curso, p:Persona)
+    begin
+        declare i:ImparticionAsignatura;
+        i:=c.imparticion->select(i|i.asignatura=a)->any(true);
+        insert (i,p) into Matricula;
+    end
+    pre TitulacionOK: self.titulacion->includes(t)
+    pre AsignaturaOK: t.asignatura->includes(a)
+    pre CursoOK: c.imparticion->select(i|i.asignatura=a)->notEmpty()
+    pre PersonaOK1: --no es ni profesor ni alumno de esa imparticion de asignatura
+        let ia:ImparticionAsignatura=c.imparticion->select(i|i.asignatura=a)->any(true) in ia.profesor<>p and ia.alumno->excludes(p)
+end
+
+abstract class Titulacion --es abstracta porque no se puede instanciar. No se puede crear un objeto de tipo Titulacion porque no tiene sentido. Es una clase que sirve para agrupar a Grado y Master, que heredan de ella.
+attributes
+nombre: String
+end
+
+class Grado < Titulacion --clase que representa a un grado, que hereda de Titulacion
+end
+
+class Master < Titulacion --clase que representa a un master, que hereda de Titulacion
+end
+
+class Asignatura --clase que representa a una asignatura. Requisito 1
+attributes
+creditos: Integer --numero de creditos de la asignatura
+end
+
+class Curso --clase que representa a un curso
+attributes
+anio: Integer --año en el que se imparte el curso
+end
+
+class ImparticionAsignatura
+end
+
+class Persona --clase que representa a una persona, que puede ser un alumno o un profesor
+end
+
+class Titulo
+attributes
+nombreUniversidad: String derive = self.titulacion.universidad.nombre
+nombreTitulacion: String derive = self.titulacion.nombre
+end
+
+aggregation TitulacionAsignaturas between --Requisito 1
+Titulacion [*] role titulacion
+Asignatura [*] role asignatura
+end
+
+association AsignaturaImparticion between --Requisito 1
+Asignatura [1] role asignatura
+ImparticionAsignatura [*] role imparticion
+end
+
+association ImparticionCurso between --Requisito 2
+ImparticionAsignatura [*] role imparticion
+Curso [1] role curso
+end
+
+composition UniversidadTitulacion between --Requisito 3
+Universidad [1] role universidad
+Titulacion [*] role titulacion
+end
+
+association Docencia between --Requisito 4
+ImparticionAsignatura [*] role imparticion
+Persona [1] role profesor
+end
+
+associationclass Matricula between --Requisito 6
+ImparticionAsignatura [*] role impartida
+Persona [*] role alumno
+attributes
+calificacion: Integer
+aprobada : Boolean derive: self.calificacion>=5
+end
+
+composition Certificado between
+Titulacion [1] role titulacion
+Titulo [*] role titulo
+end
+
+association CursoDelTitulo between
+Curso [1] role curso
+Titulo [*] role titulo
+end
+
+
+constraints
+
+-- Requisito #5. Cada profesor no puede dar más de 4 asignaturas cada curso (independientemente del número de créditos que tengan).
+context Persona
+inv DocenciaLimitada:
+    Curso.allInstances()->forAll(c | Persona.allInstances()->forAll(p | p.imparticion->select(ia | ia.curso=c)->size() <= 4))
+
+--Requisito #6. Las notas son o null o un entero entre 0 y 10
+context Matricula
+inv ValorCorrecto:
+    self.calificacion <> null implies (self.calificacion >= 0 and self.calificacion <= 10)
+
+--Requisito #7. Un alumno solo puede matricularse hasta 3 veces de una misma asignatura en cursos distintos
+context Persona
+inv Solo3Convocatorias: --let nombreVariable : Bag(TipoElemento) = expresionQueGeneraLaBolsa in expresionDondeSeUsaLaBolsa. Una bolsa es una colección desordenada que permite duplicados
+    let asigs: Bag(Asignatura) = self.imparticion.asignatura in asigs->forAll(a1 | asigs->select(a | a=a1)->size() <= 3)--coge todas las asignaturas de asigs. Para cada asignatura a1 de asigs, coge todas las asignaturas de asigs que sean iguales a a1 y comprueba que el tamaño de esa bolsa es menor o igual que 3
+
+--Requisito #8. Un alumno solo puede aprobar una asignatura una vez, no pudiendo matricularse de asignaturas que ya ha aprobado en cursos anteriores.
+context Persona
+inv YaAprobada:
+    let asigs:Bag(Asignatura) = self.imparticion.asignatura in asigs->forAll(a|self.matricula->select(m|m.aprobada and m.impartida.asignatura=a)->size()<=1)
+    
+
+--Requisito #9. dos imparticiones de una asignatura no pueden coincidir en un mismo curso
+context Asignatura
+inv UnaImparticionPorCurso:
+    self.imparticion->forAll(i1,i2|i1<>i2 implies i1.curso.anio<>i2.curso.anio)
+
+--Requisito #10. Todos los cursos, salvo a lo más el último, deben tener todas sus asignaturas evaluadas.
+context Curso
+inv TodasLasAsignaturasEvaluadas:
+    let maxAnio: Integer = Curso.allInstances()->collect(anio)->max() in self.anio <> maxAnio implies self.imparticion.matricula->forAll(m|m.calificacion<>null)
+
+--Requisito #11. Los profesores no pueden matricularse en aquellas asignaturas que imparten ese curso, aunque sí en otras.
+context Persona
+inv NoSeDaClaseASiMismo:
+    self.imparticion->forAll(i|i.alumno->excludes(self))
+
+context Curso
+inv AniosDistintos:
+    Curso.allInstances()->forAll(c1,c2|c1<>c2 implies c1.anio<>c2.anio)
+    
+
+
+
+

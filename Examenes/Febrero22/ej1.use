@@ -1,0 +1,236 @@
+model SistemaFinanciero
+
+class Banco 
+attributes
+nombre: String
+end
+
+class Sucursal < Empresa
+attributes
+nombre: String
+operations
+abrirCuentaDeCredito(c:Cliente): CuentaDeCredito
+    begin
+        declare cc:CuentaDeCredito;
+        cc:=new CuentaDeCredito();
+        insert(self, cc) into CuentaEnSucursal;
+        insert(c, cc) into ClienteCuenta;
+        result:=cc;
+    end
+
+abrirCuentaNormal(c:Cliente): CuentaNormal
+    begin
+        declare cn:CuentaNormal;
+        cn:=new CuentaNormal();
+        insert(self,cn) into CuentaEnSucursal;
+        insert(c, cn) into ClienteCuenta;
+        result:=cn;
+    end
+cambioLimite(cc:CuentaDeCredito,nuevoLimite:Real):Boolean
+    begin
+        declare autorizado:Boolean;
+        result:=false;
+        autorizado:= if self.responsable->isEmpty() then 
+                        self.autorizarCambioLimite(cc,nuevoLimite) 
+                     else
+                        self.responsable.autorizarCambioLimite(cc,nuevoLimite)
+                    endif;
+        if autorizado then
+            cc.limite:=nuevoLimite;
+            result:=true;
+        end
+    end
+    pre CuentaSubordinada: cc.sucursal=self
+
+    autorizarCambioLimite(cc:CuentaDeCredito,nuevoLimite:Real): Boolean =
+        (nuevoLimite <= cc.limite) or
+        ((cc.limite*1.1 <= nuevoLimite) and (cc.saldo >= nuevoLimite))
+end -- class Sucursal
+
+class Ciudad
+attributes
+nombre: String
+end
+
+abstract class Cliente
+attributes
+nombre: String
+end
+
+class Persona < Cliente
+end
+
+class Empresa < Cliente
+end
+
+abstract class Cuenta
+attributes
+saldo : Real init: 0.0
+IBAN : Integer
+operations
+consultarSaldo(): Real = self.saldo
+end
+
+ingresar(r:Real)
+    begin
+    self.saldo:=self.saldo+r;
+    end
+    pre IngresoPositivo: r>=0
+    post IngresoOk: saldo = saldo@pre + r
+
+retiradaEfectivo(r:Real)
+    begin
+        self.saldo:= self.saldo - r;
+    end
+    pre RetiradaPositiva: r>=0
+    post ExtraccionOk: saldo= saldo@pre-r
+
+transferencia(destino:Cuenta, r: Real)
+    begin
+        declare sucursalOrigen: Sucursal, sucursalDestino: Sucursal, 
+                comisionOrigen: Real, comisionDestino: Real;
+        comisionOrigen:=0.01*r;
+        comisionDestino:=0.01*r;
+        sucursalOrigen:=self.sucursal;
+        sucursalDestino:=destino.sucursal;
+        --Exenciones de comisiones
+        if sucursalOrigen.banco=sucursalDestino.banco then --entre cuentas del mismo banco
+            comisionOrigen:=0.0;
+            comisionDestino:=0.0;
+        else
+            if sucursalOrigen.banco.empresaVIP->includes(self.propietario) --cliente VIP
+            or self.deSucursal<>null --cuenta de Sucursal
+            then
+                comisionOrigen:=0.0;
+            end;
+            if sucursalDestino.banco.empresaVIP->includes(destino.propietario) --cliente VIP
+            or destino.deSucursal<>null --cuenta de Sucursal
+            then
+                comisionDestino:=0.0;
+            end;
+            sucursalOrigen.cuentaDeSucursal.ingresar(comisionOrigen);
+            sucursalDestino.cuentaDeSucursal.ingresar(comisionDestino);
+        end;
+        self.retiradaEfectivo(r);
+        destino.ingresar(r-comisionDestino-comisionOrigen);
+    end
+    pre transferValida: r>=0
+    post transferOk: saldo = saldo@pre - r
+
+end --class Cuenta
+
+
+class CuentaDeCredito < Cuenta
+attributes
+limite : Real init: 10.0
+operations
+retiradaEfectivo(r:Real)
+    begin
+        self.saldo:=self.saldo-r
+    end
+    pre RetiradaPositiva: r>=0 and r<=self.saldo+self.limite
+    post ExtraccionOk: saldo = saldo@pre - r
+end
+
+class CuentaNormal < Cuenta
+operations
+retiradaEfectivo(r:Real)
+    begin
+        self.saldo:=self.saldo-r
+    end
+    pre RetiradaPositiva: r>=0 and r<=self.saldo
+    post ExtraccionOk: saldo=saldo@pre - r
+end
+
+class Clock
+operations
+pasaAnio()
+    begin
+        for s in self.banco.sucursal do
+            for c in s.cuentaEnSucursal->excluding(s.cuentaDeSucursal) do
+                if not c.sucursal.banco.empresaVIP->includes(c.propietario) then --si no es VIP
+                    if c.saldo>=0 then
+                        c.transferencia(s.cuentaDeSucursal,c.saldo*0.01)
+                    else
+                        c.transferencia(s.cuentaDeSucursal, c.oclAsType(CuentaDeCredito).limite*0.01) --oclAsType es un casteo
+                    end
+                end
+            end
+        end
+    end
+end
+
+composition BancoSucursal between
+Banco [1] role banco
+Sucursal [1..*] role sucursal
+end
+
+association CiudadSucursal between
+Ciudad [1] role ciudad
+Sucursal [*] role sucursal
+end
+
+association Jerarquia between
+Sucursal [0..1] role responsable
+Sucursal [*] role subordinada
+end
+
+association ClienteCuenta between
+Cliente [1] role propietario
+Cuenta [1..*] role cuenta
+end
+
+association CuentaDeSucursal between
+Sucursal [0..1] role deSucursal
+Cuenta [1] role cuentaDeSucursal
+end
+
+association CuentaEnSucursal between
+Sucursal [1] role sucursal
+Cuenta [1..*] role cuentaEnSucursal
+end
+
+association ClockBanco between
+Clock [1] role clock
+Banco [*] role banco
+end
+
+association CuentaVIP between
+Banco [*] role bancoVIP
+Empresa [*] role empresaVIP derive = 
+    Empresa.allInstances()->select(e|e.cuenta->exists(c|c.saldo>=1000000 and c.sucursal.banco = self))
+end
+
+constraints
+
+--Requisito 1. No puede haber más de tres sucursales de un mismo banco en una ciudad
+context Banco
+inv MaximoTresSucursalesPorCiudad:
+self.sucursal.ciudad->forAll(c|c.sucursal->select(banco=self)->size()<=3)
+
+--Requisito 3. Cada cuenta normal tiene un saldo, que debe ser positivo.
+context CuentaNormal
+inv SaldoPositivo:
+self.saldo>=0
+
+--Requisito 3. Cada cuenta de crédito puede tener un sueldo negativo con un límite. Es decir, que el saldo más el limite tiene que dar positivo
+context CuentaDeCredito
+inv SaldoPositivoCred:
+self.saldo + self.limite >= 0
+
+--Requisito 2. Todas las sucursales tienen una cuenta de la que son propietarias
+context Sucursal
+inv MiCuentaDeSucursal:
+self.cuentaEnSucursal->includes(cuentaDeSucursal)
+
+context Sucursal
+inv JerarquiaOk:
+self.subordinada->closure(subordinada)->excludes(self)
+
+context Sucursal
+inv JerarquiaOkBancos:
+self.subordinada->forAll(s1,s2|s1.banco=s2.banco)
+
+
+
+

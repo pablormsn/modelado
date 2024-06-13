@@ -1,0 +1,105 @@
+model Teatros
+
+enum Sesion {tarde, noche}
+
+class Teatro
+operations
+obras():Set(Obra) = self.representacion->collect(obraRepresentada)->asSet()
+obrasTemp(t:Temporada):Set(Obra) = self.representacion->select(r|r.temporada=t)->collect(obraRepresentada)->asSet()
+end
+
+class Obra
+attributes
+    titulo: String
+end
+
+abstract class Persona
+end
+
+class Autor < Persona
+end
+
+class Actor < Persona
+end
+
+class Personaje
+end
+
+class Representacion
+attributes
+    dia: Integer
+    sesion: Sesion
+end
+
+class Papel
+end
+
+class Temporada
+end
+
+association TemporadaRepresentacion between
+Temporada [1] role temporada
+Representacion [*] role repre
+end
+
+association RepresentacionObra between
+Representacion [*] role repres
+Obra [1] role obraRepresentada
+end
+
+aggregation ObraPersonajes between
+Obra [1] role obra
+Personaje [*] role personaje
+end
+
+aggregation ObraAutor between
+Obra [*] role obraEscrita
+Autor [1] role autor
+end
+
+association TeatroRepresentacion between
+Teatro [1] role teatro
+Representacion [*] role representacion
+end
+
+association ActorPapel between
+Actor [1] role actor
+Papel [1..*] role papelActuado
+end
+
+association RepresentacionPapel between
+Representacion [1] role actuacion
+Papel [1..*] role papelRepresentaco
+end
+
+association PersonajePapel between
+Personaje [1] role personajeRepresentado
+Papel [1] role papel
+end
+
+constraints
+
+context Actor
+inv NoRepresentacionesALaVez:
+self.papelActuado.actuacion->forAll(r1, r2|r1<>r2 implies (r1.dia=r2.dia implies r1.sesion<>r2.sesion))
+
+context Obra
+inv TituloNoNulo:
+self.titulo<>null and self.titulo<>''
+
+context Representacion
+inv DiaPositivo:
+self.dia>=0
+
+context Actor
+inv UnaObraPorTeatroPorTemporada:
+Temporada.allInstances()->forAll(t|Teatro.allInstances()->forAll(tr|self.papelActuado.actuacion->select(r|r.temporada=t and r.teatro=tr)->collect(obraRepresentada)->size<=1))
+
+context Representacion
+inv NoMismaObraEnMismoDiaEnDistintosTeatros:
+Representacion.allInstances()->forAll(r1,r2|r1<>r2 implies (r1.temporada=r2.temporada and r1.obraRepresentada=r2.obraRepresentada and r1.teatro<>r2.teatro implies r1.dia<>r2.dia))
+
+
+
+
+

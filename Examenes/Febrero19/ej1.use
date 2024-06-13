@@ -1,0 +1,107 @@
+model nozamA
+
+class Cliente
+attributes
+direccion: String
+end
+
+class Producto
+attributes
+precio: Real
+end
+
+class Empresa
+end
+
+class EmpresaTransporte
+end
+
+class Albaran
+attributes
+precio: Real derive = 
+    let s: Real = self.pedido.articulos->collect(producto.precio)->sum() in
+        if self.pedido.articulos->size() < 10 then s --restriccion 3
+        else s - (s*0.1)
+        endif
+end
+
+class Pedido
+end
+
+class Articulo
+attributes
+precio: Real
+SN: Integer
+end
+
+association EmpresaCliente between
+Empresa [1..*] role empresa
+Cliente [1..*] role clientes
+end
+
+aggregation ProductoEmpresa between
+Empresa [1] role empresa
+Producto [*] role productos
+end
+
+association Existencias between
+Producto [1] role producto
+Articulo [*] role articulos
+end
+
+aggregation EnStock between
+Empresa [1] role empresa
+Articulo [*] role articuloDisponible
+end
+
+aggregation Propiedad between
+Cliente [0..1] role cliente
+Articulo [*] role articulo
+end
+
+association Pedidos between
+Pedido [*] role pedido
+Cliente [1] role cliente
+end
+
+association Transporte between
+Cliente [*] role cliente
+EmpresaTransporte [1] role empresaTransporte
+end
+
+association Factura between
+Pedido [1] role pedido
+Albaran [1] role albaran
+end
+
+association PedidoArticulo between
+Pedido [1] role pedido
+Articulo [*] role articulos
+end
+
+constraints
+
+--Restriccion 1, todas las unidades tienen un numero de serie unico
+context Articulo
+inv NumeroDeSerieUnico:
+Articulo.allInstances()->isUnique(SN)
+
+--Restriccion 2, todos los articulos tienen el mismo precio, que coincide con el del producto.
+context Articulo
+inv MismoPrecio:
+self.precio=self.producto.precio
+
+--Restriccion 3, todos los articulos de un pedido son del mismo producto
+context Pedido
+inv MismoProducto:
+self.articulos->collect(producto)->asSet()->size()=1
+
+context Cliente
+inv NoMasDe30:
+self.articulo->collect(producto)->asSet()->forAll(p|self.articulo->select(a|a.producto=p)->size()<=30)
+
+
+
+
+
+
